@@ -13,7 +13,6 @@
 		C441DA9D2A1623500074848E /* TaskListApp.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C441DA9B2A1623500074848E /* TaskListApp.xcdatamodeld */; };
 		C441DA9F2A1623530074848E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C441DA9E2A1623530074848E /* Assets.xcassets */; };
 		C441DAA22A1623530074848E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C441DAA02A1623530074848E /* LaunchScreen.storyboard */; };
-		C441DAAA2A162A2A0074848E /* NewTaskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C441DAA92A162A2A0074848E /* NewTaskViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,7 +24,6 @@
 		C441DA9E2A1623530074848E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C441DAA12A1623530074848E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C441DAA32A1623530074848E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		C441DAA92A162A2A0074848E /* NewTaskViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewTaskViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,7 +59,6 @@
 				C441DA922A1623500074848E /* AppDelegate.swift */,
 				C441DA942A1623500074848E /* SceneDelegate.swift */,
 				C441DA962A1623500074848E /* TaskListViewController.swift */,
-				C441DAA92A162A2A0074848E /* NewTaskViewController.swift */,
 				C441DA9E2A1623530074848E /* Assets.xcassets */,
 				C441DAA02A1623530074848E /* LaunchScreen.storyboard */,
 				C441DAA32A1623530074848E /* Info.plist */,
@@ -141,7 +138,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				C441DA9D2A1623500074848E /* TaskListApp.xcdatamodeld in Sources */,
-				C441DAAA2A162A2A0074848E /* NewTaskViewController.swift in Sources */,
 				C441DA972A1623500074848E /* TaskListViewController.swift in Sources */,
 				C441DA932A1623500074848E /* AppDelegate.swift in Sources */,
 				C441DA952A1623500074848E /* SceneDelegate.swift in Sources */,
