@@ -6,11 +6,11 @@
 //
 
 import UIKit
-import CoreData
 
 final class TaskListViewController: UITableViewController {
-    private let viewContext = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
     private let cellID = "cell"
+    private let storageManager = StorageManager.shared
     private var taskList: [Task] = []
 
     override func viewDidLoad() {
@@ -18,7 +18,7 @@ final class TaskListViewController: UITableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
         view.backgroundColor = .white
         setupNavigationBar()
-        fetchData()
+        fetchTasks()
     }
     
     // MARK: - UITableViewDataSource
@@ -35,54 +35,63 @@ final class TaskListViewController: UITableViewController {
         return cell
     }
     
+    // MARK: - UITableViewDelegate
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            showAlert(withTitle: "Delete Task", andMessage: "Do you want to delete \(taskList[indexPath.row].title ?? "the Task")?", indexPath: indexPath)
+        }
+    }
+    
+    // MARK: - Private Methods
     @objc private func addNewTask() {
         showAlert(withTitle: "New Task", andMessage: "What do you want to do?")
     }
     
-    private func fetchData() {
-        let fetchRequest = Task.fetchRequest()
-        
-        do {
-            taskList = try viewContext.fetch(fetchRequest)
-        } catch {
-            print(error.localizedDescription)
-        }
+    private func fetchTasks() {
+        taskList = storageManager.fetchTasks()
     }
     
-    private func showAlert(withTitle title: String, andMessage message: String) {
+    private func showAlert(withTitle title: String, andMessage message: String, indexPath: IndexPath? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let saveAction = UIAlertAction(title: "Save Task", style: .default) { [unowned self] _ in
-            guard let task = alert.textFields?.first?.text, !task.isEmpty else { return }
-            save(task)
+        
+        if let indexPath = indexPath {
+            let deleteAction = UIAlertAction(title: "Delete Task", style: .destructive) { [unowned self] _ in
+                delete(at: indexPath)
+            }
+            alert.addAction(deleteAction)
+        } else {
+            let saveAction = UIAlertAction(title: "Save Task", style: .default) { [unowned self] _ in
+                guard let task = alert.textFields?.first?.text, !task.isEmpty else { return }
+                save(task)
+            }
+            alert.addAction(saveAction)
+            alert.addTextField { textField in
+                textField.placeholder = "New Task"
+            }
         }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
-        alert.addAction(saveAction)
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
         alert.addAction(cancelAction)
-        alert.addTextField { textField in
-            textField.placeholder = "New Task"
-        }
+        
         present(alert, animated: true)
     }
     
     private func save(_ taskName: String) {
-        let task = Task(context: viewContext)
-        task.title = taskName
+        let task = storageManager.createTask(withTitle: taskName)
         taskList.append(task)
         
         let indexPath = IndexPath(row: taskList.count - 1, section: 0)
         tableView.insertRows(at: [indexPath], with: .automatic)
         
-        if viewContext.hasChanges {
-            do {
-                try viewContext.save()
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
         dismiss(animated: true)
     }
+    
+    private func delete(at indexPath: IndexPath) {
+        storageManager.deleteTask(taskList[indexPath.row])
+        taskList.remove(at: indexPath.row)
+        tableView.deleteRows(at: [indexPath], with: .automatic)
+    }
 }
-
 
 // MARK: - SetupUI
 private extension TaskListViewController {
