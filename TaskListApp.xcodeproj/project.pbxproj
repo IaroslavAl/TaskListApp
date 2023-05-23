@@ -14,6 +14,7 @@
 		C441DA9F2A1623530074848E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C441DA9E2A1623530074848E /* Assets.xcassets */; };
 		C441DAA22A1623530074848E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C441DAA02A1623530074848E /* LaunchScreen.storyboard */; };
 		C443B5382A17847B0010FB6C /* StorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C443B5372A17847B0010FB6C /* StorageManager.swift */; };
+		C4CB13F12A1CD35A002E7399 /* AlertControllerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4CB13F02A1CD35A002E7399 /* AlertControllerFactory.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		C441DAA12A1623530074848E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		C441DAA32A1623530074848E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C443B5372A17847B0010FB6C /* StorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StorageManager.swift; sourceTree = "<group>"; };
+		C4CB13F02A1CD35A002E7399 /* AlertControllerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertControllerFactory.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,12 +60,13 @@
 		C441DA912A1623500074848E /* TaskListApp */ = {
 			isa = PBXGroup;
 			children = (
+				C4CB13EA2A1A2117002E7399 /* Models */,
 				C443B5342A17839B0010FB6C /* ViewControllers */,
+				C4CB13EF2A1CD333002E7399 /* Factories */,
 				C443B5332A17838B0010FB6C /* Storyboards */,
 				C443B5362A1784530010FB6C /* Services */,
 				C443B5312A1783530010FB6C /* App */,
 				C443B5322A17836D0010FB6C /* Resources */,
-				C441DA9B2A1623500074848E /* TaskListApp.xcdatamodeld */,
 			);
 			path = TaskListApp;
 			sourceTree = "<group>";
@@ -108,6 +111,22 @@
 				C443B5372A17847B0010FB6C /* StorageManager.swift */,
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		C4CB13EA2A1A2117002E7399 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C441DA9B2A1623500074848E /* TaskListApp.xcdatamodeld */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C4CB13EF2A1CD333002E7399 /* Factories */ = {
+			isa = PBXGroup;
+			children = (
+				C4CB13F02A1CD35A002E7399 /* AlertControllerFactory.swift */,
+			);
+			path = Factories;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -183,6 +202,7 @@
 				C441DA9D2A1623500074848E /* TaskListApp.xcdatamodeld in Sources */,
 				C441DA972A1623500074848E /* TaskListViewController.swift in Sources */,
 				C443B5382A17847B0010FB6C /* StorageManager.swift in Sources */,
+				C4CB13F12A1CD35A002E7399 /* AlertControllerFactory.swift in Sources */,
 				C441DA932A1623500074848E /* AppDelegate.swift in Sources */,
 				C441DA952A1623500074848E /* SceneDelegate.swift in Sources */,
 			);

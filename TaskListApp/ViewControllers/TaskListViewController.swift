@@ -21,76 +21,39 @@ final class TaskListViewController: UITableViewController {
         fetchTasks()
     }
     
-    // MARK: - UITableViewDataSource
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        taskList.count
-    }
-    
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
-        let task = taskList[indexPath.row]
-        var content = cell.defaultContentConfiguration()
-        content.text = task.title
-        cell.contentConfiguration = content
-        return cell
-    }
-    
-    // MARK: - UITableViewDelegate
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            showAlert(withTitle: "Delete Task", andMessage: "Do you want to delete \(taskList[indexPath.row].title ?? "the Task")?", indexPath: indexPath)
-        }
-    }
-    
     // MARK: - Private Methods
     @objc private func addNewTask() {
-        showAlert(withTitle: "New Task", andMessage: "What do you want to do?")
+        showAlert()
+    }
+    
+    private func save(taskName: String) {
+        storageManager.create(taskName) { [unowned self] task in
+            taskList.append(task)
+            tableView.insertRows(
+                at: [IndexPath(row: taskList.count - 1, section: 0)],
+                with: .automatic
+            )
+        }
     }
     
     private func fetchTasks() {
-        taskList = storageManager.fetchTasks()
-    }
-    
-    private func showAlert(withTitle title: String, andMessage message: String, indexPath: IndexPath? = nil) {
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        
-        if let indexPath = indexPath {
-            let deleteAction = UIAlertAction(title: "Delete Task", style: .destructive) { [unowned self] _ in
-                delete(at: indexPath)
-            }
-            alert.addAction(deleteAction)
-        } else {
-            let saveAction = UIAlertAction(title: "Save Task", style: .default) { [unowned self] _ in
-                guard let task = alert.textFields?.first?.text, !task.isEmpty else { return }
-                save(task)
-            }
-            alert.addAction(saveAction)
-            alert.addTextField { textField in
-                textField.placeholder = "New Task"
+        storageManager.fetchData { [unowned self] result in
+            switch result {
+            case .success(let taskList):
+                self.taskList = taskList
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
-        
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true)
     }
     
-    private func save(_ taskName: String) {
-        let task = storageManager.createTask(withTitle: taskName)
-        taskList.append(task)
-        
-        let indexPath = IndexPath(row: taskList.count - 1, section: 0)
-        tableView.insertRows(at: [indexPath], with: .automatic)
-        
-        dismiss(animated: true)
-    }
-    
-    private func delete(at indexPath: IndexPath) {
-        storageManager.deleteTask(taskList[indexPath.row])
+    private func deleteTask(at indexPath: IndexPath) {
+        let task = taskList[indexPath.row]
         taskList.remove(at: indexPath.row)
         tableView.deleteRows(at: [indexPath], with: .automatic)
+        storageManager.delete(task)
     }
+
 }
 
 // MARK: - SetupUI
@@ -115,5 +78,64 @@ private extension TaskListViewController {
             action: #selector(addNewTask)
         )
         navigationController?.navigationBar.tintColor = .white
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension TaskListViewController {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        taskList.count
+    }
+    
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath)
+        let task = taskList[indexPath.row]
+        var content = cell.defaultContentConfiguration()
+        content.text = task.title
+        cell.contentConfiguration = content
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate
+extension TaskListViewController {
+    // Edit task
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let task = taskList[indexPath.row]
+        showAlert(task: task) {
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
+
+    // Delete task
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            let task = taskList.remove(at: indexPath.row)
+            tableView.deleteRows(at: [indexPath], with: .automatic)
+            storageManager.delete(task)
+        }
+    }
+}
+
+// MARK: - Alert Controller
+extension TaskListViewController {
+    private func showAlert(task: Task? = nil, completion: (() -> Void)? = nil) {
+        let alertFactory = AlertControllerFactory(
+            userAction: task != nil ? .editTask : .newTask,
+            taskTitle: task?.title
+        )
+        
+        let alert = alertFactory.createAlert { [weak self] taskName in
+            if let task, let completion {
+                self?.storageManager.update(task, newName: taskName)
+                completion()
+                return
+            }
+            
+            self?.save(taskName: taskName)
+        }
+        
+        present(alert, animated: true)
     }
 }
